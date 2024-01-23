@@ -8,7 +8,7 @@ import (
 	"github.com/bxcodec/faker/v4"
 )
 
-func main() {
+func main2() {
 
 	database.Connect()
 	for i := 0; i < 10; i++ {

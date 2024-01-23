@@ -2,7 +2,7 @@ package routes
 
 import (
 	"ambassador/src/controllers"
-	"ambassador/src/controllers/middlewares"
+	"ambassador/src/middlewares"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -27,5 +27,25 @@ func Setup(app *fiber.App) {
 	adminAuthenticated.Delete("/products/:id", controllers.DeleteProduct)
 	adminAuthenticated.Get("/users/:id/links", controllers.Link)
 	adminAuthenticated.Get("/orders", controllers.Orders)
+
+	ambassador := api.Group("/ambassador")
+	ambassador.Post("/register", controllers.Register)
+	ambassador.Post("/login", controllers.Login)
+	ambassador.Get("/products/frontend", controllers.ProductsFrontend)
+	ambassador.Get("/products/backend", controllers.ProductsBackend)
+
+	ambassadorAuthenticated := ambassador.Use(middlewares.IsAuthenticated)
+	ambassadorAuthenticated.Get("/user", controllers.User)
+	ambassadorAuthenticated.Post("/logout", controllers.Logout)
+	ambassadorAuthenticated.Put("/users/info", controllers.UpdateInfo)
+	ambassadorAuthenticated.Put("/users/password", controllers.UpdatePassword)
+	ambassadorAuthenticated.Post("/links", controllers.CreateLink)
+	ambassadorAuthenticated.Get("/stats", controllers.Stats)
+	ambassadorAuthenticated.Get("/ranking", controllers.Ranking)
+
+	checkout := api.Group("/checkout")
+	checkout.Get("links/:code", controllers.GetLink)
+	checkout.Post("orders", controllers.CreateOrder)
+	checkout.Post("orders/confirm", controllers.CompleteOrder)
 
 }
